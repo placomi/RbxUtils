@@ -1,0 +1,9 @@
+{
+  "name": "Utils",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "Folder",
+    "$path": "src",
+  }
+}
+
