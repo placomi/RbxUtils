@@ -16,4 +16,5 @@ return {
 	observePlayer = require("@self/observePlayer"),
 	observeCharacter = require("@self/observeCharacter"),
 	observeLocalCharacter = require("@self/observeLocalCharacter"),
+	observePlayerCharacter = require("@self/observeCharacter"),
 }
