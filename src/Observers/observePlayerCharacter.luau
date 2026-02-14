@@ -30,7 +30,7 @@ type CharacterCallback = (player: Player, character: Model) -> (() -> ())?
 	end, { somePlayer, anotherPlayer })
 	```
 ]=]
-local function observeCharacter(playerCallback: PlayerCallback, callback: CharacterCallback): () -> ()
+local function observePlayerCharacter(playerCallback: PlayerCallback, callback: CharacterCallback): () -> ()
 	return observePlayer(function(player)
 		local playerCleanupFn: ((string) -> ())? = playerCallback(player)
 		local characterCleanupFn: (() -> ())? = nil
@@ -96,4 +96,4 @@ local function observeCharacter(playerCallback: PlayerCallback, callback: Charac
 	end)
 end
 
-return observeCharacter
+return observePlayerCharacter
