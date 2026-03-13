@@ -27,7 +27,7 @@ local function getReadableProperties(className: string): { string }
 	return properties
 end
 
-return function<Class>(instance: Instance & Class): (Class, () -> ())
+return function<Class>(instance: Class): (Class, () -> ())
 	local cachedInstanceWatcher = instanceCache[instance]
 	local cachedInstanceCleanup = instanceCleanupCache[instance]
 	if cachedInstanceWatcher then
@@ -47,6 +47,7 @@ return function<Class>(instance: Instance & Class): (Class, () -> ())
 		destroying:Disconnect()
 		changed:Disconnect()
 	end
+	instanceCleanupCache[instance] = cleanup
 
 	changed = instance.Changed:Connect(function(key)
 		instanceWatcher[key] = instance[key]
