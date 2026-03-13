@@ -31,6 +31,9 @@ local function observePlayer(callback: Callback): () -> ()
 		if not playerAddedConn.Connected then
 			return
 		end
+		if inflight[player] or cleanupsPerPlayer[player] then
+			return
+		end
 
 		task.spawn(function()
 			inflight[player] = Enum.PlayerExitReason.Unknown
