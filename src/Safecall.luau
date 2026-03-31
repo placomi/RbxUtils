@@ -7,5 +7,5 @@ return function(f: (...any) -> ...any, errorMessage: string?, ...: any)
 	local success, result = xpcall(f, function(err)
 		warn(`{PRINT_IDENTIFIER} {errorMessage}\n{err}\n{debug.traceback()}`)
 	end, ...)
-	return success and result or nil
+	return success, result or nil
 end
