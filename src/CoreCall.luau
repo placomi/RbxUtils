@@ -1,6 +1,6 @@
 local StarterGui = game:GetService("StarterGui")
 
-local MAX_RETRIES = 10
+local MAX_RETRIES = 120
 
 return function(method: string, ...)
 	local result = {}
