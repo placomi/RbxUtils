@@ -1,10 +1,6 @@
 local templateCharacter = script.TemplateR15
 templateCharacter:PivotTo(CFrame.new(0, 1000000, 0))
 
---[=[
-	fixes the issue with R6 accessories being low quality by using a template R15 rig,
-	then cloning the accessories over to the R6 rig.
-]=]
 local rigidAccessoryTypes = {
 	[Enum.AccessoryType.Hat] = true,
 	[Enum.AccessoryType.Hair] = true,
@@ -16,6 +12,10 @@ local rigidAccessoryTypes = {
 	[Enum.AccessoryType.Waist] = true,
 }
 
+--[=[
+	fixes the issue with R6 accessories being low quality by using a template R15 rig,
+	then cloning the accessories over to the R6 rig.
+]=]
 return function(character: Model, description: HumanoidDescription)
 	local humanoid: Humanoid = character:FindFirstChild("Humanoid")
 	assert(humanoid, "Attempted to apply description on a rig with no humanoid")
