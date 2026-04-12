@@ -13,14 +13,14 @@ local function getReflectedVector(v: vector, n: vector): vector
 end
 
 --* PUBLIC *--
-return function(origin: vector, direction: vector, maxBounces: number, raycastParams: RaycastParams?): RaytraceResult
+return function(origin: vector, direction: vector, maxBounces: number, raycastParams: RaycastParams?, visualize: boolean): RaytraceResult
 	local results: RaytraceResult = table.create(maxBounces)
 	local currentOrigin: vector = origin
 	local currentDirection: vector = vector.normalize(direction)
 	local remainingDistance: number = vector.magnitude(direction)
 
 	for _ = 1, maxBounces do
-		local raycastResult:RaycastResult = Raycast(currentOrigin, currentDirection * remainingDistance, raycastParams)
+		local raycastResult:RaycastResult = Raycast(currentOrigin, currentDirection * remainingDistance, raycastParams, visualize)
 		table.insert(results, raycastResult)
 		if not raycastResult then
 			break

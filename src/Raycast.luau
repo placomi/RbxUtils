@@ -16,14 +16,15 @@ local raycastPart: BasePart = Create("Part")({
 local hitAdornment: BoxHandleAdornment = Create("BoxHandleAdornment")({
 	Color3 = Color3.new(0, 1, 0),
 	Size = Vector3.one * 0.1,
+	Shading = Enum.AdornShading.AlwaysOnTop,
 })
 
 local rayAdornment: LineHandleAdornment = Create("LineHandleAdornment")({
 	Color3 = Color3.new(1, 0, 0),
 	Thickness = 1,
 	Length = 0,
+	AlwaysOnTop = true,
 })
-
 
 local function visualizeRaycast(origin: vector, pos: vector, hit: boolean)
 	local rayClone = rayAdornment:Clone()
