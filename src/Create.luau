@@ -1,5 +1,3 @@
---!strict
-
 type Instances = {
 	Instance: Instance,
 	Accoutrement: Accoutrement,
@@ -676,124 +674,43 @@ type Instances = {
 	Wire: Wire,
 }
 
---yummers thanks ffrostfall might revise later for my usecases
-type UnknownConnectCallback = (...any) -> ()
-type Signal = RBXScriptSignal
+type function Properties(instance: type?)
+    local properties = types.newtable()
 
-type function get_connect(v: type): type?
-	local connect = v:readproperty(types.singleton("Connect"))
-
-	if connect and connect:is("function") then
-		local head = connect:parameters().head
-
-		if not head then
-			return nil
-		end
-		local callback = head[2]
-
-		if callback and callback:is("function") then
-			return callback
-		end
-	end
-
-	return nil
-end
-
-type function is_signal(v: type): type?
-	if v == Signal and v.tag == "class" then
-		return UnknownConnectCallback
-	-- luau lsp types RBXScriptSignals as tables
-	elseif v.tag == "table" then
-		local connect = get_connect(v)
-
-		if connect then
-			return connect
-		end
-
-		-- i cba to test if this is needed or not
-		local metatable = v:metatable()
-
-		if metatable then
-			connect = get_connect(metatable)
-
-			if connect then
-				return connect
-			end
-		end
-	end
-
-	return nil
-end
-
-type instance = Instance
-
-local action_metatable_symbol = table.freeze({})
-type Action = setmetatable<{
-	callback: (inst: Instance) -> (),
-	priority: number,
-}, typeof(action_metatable_symbol)>
-
-type function GetInstance(class_name: type, instances: type): type
-	if not class_name:is("singleton") then
-		return instance
-	end
-
-	return instances:readproperty(class_name) or instance
-end
-
-export type function PropertiesFor(class_name: type): type
-	local object = GetInstance(class_name, Instances)
-	local head_table = {}
-	local properties = types.newtable()
-	local current = object
-
-	local read_only_properties = table.freeze({
-		types.singleton("RobloxLocked"),
-		types.singleton("ClassName"),
-		types.singleton("UniqueId"),
-	})
-
-	while current do
-		for property, value in current:properties() do
-			if table.find(read_only_properties, property) then
+    while instance do
+        for i, v in instance:properties() do
+            local connector = v.read and v.read.tag == "table" and v.read:readproperty(types.singleton("Connect"))
+            if connector then
+                --local params = connector:parameters().head
+                --if not params then continue end
+                --local listener = params[2]
+                --if not listener then continue end
+                --properties:setproperty(i, types.optional(listener))
 				continue
-			end
+            elseif v.write then
+                properties:setproperty(i, types.optional(types.unionof(
+                    v.write,
+                    types.newfunction({}, { head = { v.write } })
+                )))
+            end
+        end
 
-			local value_read = value.read :: type
-			local callback = is_signal(value_read)
+        instance = instance:readparent()
+    end
 
-			if callback then
-				--properties:setproperty(property :: any, types.optional(callback))
-				continue
-			elseif value_read.tag == "function" or value_read.tag == "intersection" then
-				continue
-			elseif value.write then
-				head_table[1] = value_read
-				properties:setproperty(property :: any, types.optional(value.write :: any))
-			end
-		end
+    properties:setindexer(types.number, types.any)
 
-		current = current:readparent()
-	end
-
-	local nested_table_or_function_or_child = types.newtable()
-	local function_returns_child = types.newfunction()
-	local union = types.unionof(nested_table_or_function_or_child, function_returns_child, instance, Action)
-
-	nested_table_or_function_or_child:setindexer(types.number, union)
-	function_returns_child:setreturns({ union })
-
-	properties:setindexer(types.number, types.optional(union))
-
-	return properties
+    return properties
 end
 
-local function create<ClassName>(
-	className: ClassName | keyof<Instances>
-): (props: PropertiesFor<ClassName>) -> GetInstance<ClassName, Instances>
-	return function(properties: {[string]: any})
-		local success, callResult = pcall(Instance.new, className)
-		assert(success, callResult)
+type AnyProps = { [any]: any }
+
+local function create<ClassName>(className: ClassName & keyof<Instances>): (Properties<index<Instances, ClassName>>) -> index<Instances, ClassName>
+	return function(properties: AnyProps)
+		local success, callResult = pcall(Instance.new, className, nil)
+		if not success then
+			error(`Invalid class name {className}`)
+		end
 		for property, value in properties do
 			callResult[property] = value
 		end
