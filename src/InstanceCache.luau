@@ -79,6 +79,4 @@ function InstanceCache.destroy<T>(self: InstanceCache<T>)
 	table.clear(self.freeCache)
 end
 
-InstanceCache.new(Instance.new("Part"), )
-
 return InstanceCache
