@@ -688,10 +688,7 @@ type function Properties(instance: type?)
                 --properties:setproperty(i, types.optional(listener))
 				continue
             elseif v.write then
-                properties:setproperty(i, types.optional(types.unionof(
-                    v.write,
-                    types.newfunction({}, { head = { v.write } })
-                )))
+                properties:setproperty(i, v.write)
             end
         end
 
