@@ -675,34 +675,26 @@ type Instances = {
 }
 
 type function Properties(instance: type?)
-    local properties = types.newtable()
+	local properties = types.newtable()
 
-    while instance do
-        for i, v in instance:properties() do
-            local connector = v.read and v.read.tag == "table" and v.read:readproperty(types.singleton("Connect"))
-            if connector then
-                --local params = connector:parameters().head
-                --if not params then continue end
-                --local listener = params[2]
-                --if not listener then continue end
-                --properties:setproperty(i, types.optional(listener))
-				continue
-            elseif v.write then
-                properties:setproperty(i, v.write)
-            end
-        end
+	while instance do
+		for i, v in instance:properties() do
+			if v.write and v.write.tag ~= "function" then
+				properties:setproperty(i, v.write)
+			end
+		end
+		instance = instance:readparent()
+	end
 
-        instance = instance:readparent()
-    end
-
-    properties:setindexer(types.number, types.any)
-
-    return properties
+	properties:setindexer(types.number, types.any)
+	return properties
 end
 
 type AnyProps = { [any]: any }
 
-local function create<ClassName>(className: ClassName & keyof<Instances>): (Properties<index<Instances, ClassName>>) -> index<Instances, ClassName>
+local function create<ClassName>(
+	className: ClassName & keyof<Instances>
+): (Properties<index<Instances, ClassName>>) -> index<Instances, ClassName>
 	return function(properties: AnyProps)
 		local success, callResult = pcall(Instance.new, className, nil)
 		if not success then
