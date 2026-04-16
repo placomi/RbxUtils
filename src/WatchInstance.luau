@@ -1,5 +1,4 @@
---!strict
---!native
+--!optimize 2
 
 local ReflectionService = game:GetService("ReflectionService")
 
@@ -9,8 +8,8 @@ local propertyCache: { [string]: { string } } = {}
 local instanceCache: { [Instance]: { [string]: any } } = {}
 local instanceCleanupCache: { [Instance]: () -> () } = {}
 
---mm yummy memoization
 local function getReadableProperties(className: string): { string }
+	--mm yummy memoization
 	local cached = propertyCache[className]
 	if cached then
 		return cached
@@ -23,11 +22,19 @@ local function getReadableProperties(className: string): { string }
 			table.insert(properties, propertyName)
 		end
 	end
+
 	propertyCache[className] = properties
 	return properties
 end
 
-return function<Class>(instance: Class): (Class, () -> ())
+--[=[
+Returns a table that watches an instances property changes, as well as a cleanup function.
+This is intended to minimize datamodel reads, which can be costly.
+The returned table can be indexed like a regular instance, but it should never be written to.
+]=]
+local function watchInstance<Class>(instance: Class): (Class, () -> ())
+	assert(typeof(instance) == "Instance", "Tried to watch a non-instance")
+
 	local cachedInstanceWatcher = instanceCache[instance]
 	local cachedInstanceCleanup = instanceCleanupCache[instance]
 	if cachedInstanceWatcher then
@@ -42,6 +49,7 @@ return function<Class>(instance: Class): (Class, () -> ())
 	end
 
 	local destroying: RBXScriptConnection, changed: RBXScriptConnection
+
 	local function cleanup()
 		instanceCache[instance] = nil
 		destroying:Disconnect()
@@ -56,3 +64,5 @@ return function<Class>(instance: Class): (Class, () -> ())
 
 	return instanceWatcher, cleanup
 end
+
+return watchInstance
