@@ -131,6 +131,7 @@ function Stat.multiply(self: InternalStat, value: number): () -> ()
 	end
 end
 
+-- this uses thread reusage, consider using charm as a dependency for like utils in the future
 function Stat._update(self: InternalStat)
 	self._observerHead = #self._observers
 	local value = self:get()
