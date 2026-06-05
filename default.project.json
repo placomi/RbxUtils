@@ -3,7 +3,7 @@
   "emitLegacyScripts": false,
   "tree": {
     "$className": "Folder",
-    "$path": "src",
+    "$path": "src"
   }
 }
 
