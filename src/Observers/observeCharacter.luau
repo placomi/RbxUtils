@@ -60,7 +60,7 @@ local function observeCharacter(callback: Callback, allowedPlayers: { Player }?)
 			-- Watch for the character to be removed from the game hierarchy:
 			local ancestryChangedConn: RBXScriptConnection
 			ancestryChangedConn = character.AncestryChanged:Connect(function(_, newParent)
-				if newParent == nil and ancestryChangedConn.Connected then
+				if newParent == nil then
 					ancestryChangedConn:Disconnect()
 					if currentCharCleanup ~= nil then
 						task.spawn(currentCharCleanup)

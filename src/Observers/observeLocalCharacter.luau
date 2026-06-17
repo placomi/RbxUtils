@@ -37,7 +37,7 @@ local function observeLocalCharacter(callback: Callback): () -> ()
 
 		local ancestryChangedConn: RBXScriptConnection
 		ancestryChangedConn = character.AncestryChanged:Connect(function(_, parent)
-			if parent == nil and ancestryChangedConn.Connected then
+			if parent == nil then
 				ancestryChangedConn:Disconnect()
 				if typeof(cleanupFn) == "function" and subscribed then
 					task.spawn(cleanupFn)
@@ -47,7 +47,6 @@ local function observeLocalCharacter(callback: Callback): () -> ()
 				end
 			end
 		end)
-
 		cleanupFn = callback(character)
 		if typeof(cleanupFn) == "function" then
 			if ancestryChangedConn.Connected then

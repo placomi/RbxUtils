@@ -1,3 +1,4 @@
+-- delete this maybe
 export type Observable<T> = {
 	value: T,
 	callbacks: { (T) -> () },
