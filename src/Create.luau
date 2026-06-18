@@ -410,7 +410,6 @@ type Instances = {
 	DataStoreVersionPages: DataStoreVersionPages,
 	FriendPages: FriendPages,
 	InventoryPages: InventoryPages,
-	EmotesPages: EmotesPages,
 	OutfitPages: OutfitPages,
 	StandardPages: StandardPages,
 	PartOperationAsset: PartOperationAsset,

@@ -11,7 +11,7 @@ local function resultHandler(co, ok, ...)
 	return ...
 end
 
-return function(callback, ...)
+return function<Input..., Output...>(callback: (Input...) -> Output..., ...: Input...): Output...
 	local co = coroutine.create(callback)
 
 	return resultHandler(co, coroutine.resume(co, ...))
