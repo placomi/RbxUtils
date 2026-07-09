@@ -59,9 +59,7 @@ function Emitter._rewire(self: InternalEmitter)
 	table.clear(self._wires)
 
 	local chain: { { instance: Instance, outputPin: string } } = {}
-	if self._source then
-		table.insert(chain, { instance = self._source :: Instance, outputPin = self._sourcePin })
-	end
+	if self._source then table.insert(chain, { instance = self._source :: Instance, outputPin = self._sourcePin }) end
 	for _, effect in self.effects do
 		table.insert(chain, { instance = effect, outputPin = "Output" })
 	end
@@ -85,9 +83,7 @@ end
 	Pass nil to disconnect.
 ]=]
 function Emitter.setSource(self: InternalEmitter, producer: Instance?, outputPin: string?)
-	if self._destroyed then
-		return
-	end
+	if self._destroyed then return end
 	self._source = producer
 	self._sourcePin = outputPin or "Output"
 	self:_rewire()
@@ -98,9 +94,7 @@ end
 	effects[#effects] feeds the AudioEmitter.
 ]=]
 function Emitter.setEffects(self: InternalEmitter, effects: { Instance })
-	if self._destroyed then
-		return
-	end
+	if self._destroyed then return end
 	self.effects = table.clone(effects)
 	self:_rewire()
 end
@@ -109,9 +103,7 @@ end
 	Inserts an effect into the chain at the given index (default: end).
 ]=]
 function Emitter.addEffect(self: InternalEmitter, effect: Instance, index: number?)
-	if self._destroyed then
-		return
-	end
+	if self._destroyed then return end
 	table.insert(self.effects, index or #self.effects + 1, effect)
 	self:_rewire()
 end
@@ -120,13 +112,9 @@ end
 	Removes an effect from the chain.
 ]=]
 function Emitter.removeEffect(self: InternalEmitter, effect: Instance)
-	if self._destroyed then
-		return
-	end
+	if self._destroyed then return end
 	local index = table.find(self.effects, effect)
-	if not index then
-		return
-	end
+	if not index then return end
 	table.remove(self.effects, index)
 	self:_rewire()
 end
@@ -135,9 +123,7 @@ end
 	Destroys all wires and the AudioEmitter. Effects and source are not destroyed.
 ]=]
 function Emitter.Destroy(self: InternalEmitter)
-	if self._destroyed then
-		return
-	end
+	if self._destroyed then return end
 	self._destroyed = true
 	for _, wire in self._wires do
 		wire:Destroy()

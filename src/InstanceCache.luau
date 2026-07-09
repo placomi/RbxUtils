@@ -40,28 +40,27 @@ function InstanceCache.new<T>(template: T, count: number, parent: Instance, free
 		table.insert(freeCache, newInstance)
 	end
 
-	return setmetatable({
-		freeCache = freeCache,
-		usedCache = {},
-		freeCallback = freeCallback,
-	} :: InstanceCacheData<T>, InstanceCache)
+	return setmetatable(
+		{
+			freeCache = freeCache,
+			usedCache = {},
+			freeCallback = freeCallback,
+		} :: InstanceCacheData<T>,
+		InstanceCache
+	)
 end
 
 function InstanceCache.get<T>(self: InstanceCache<T>): T?
 	local instance = table.remove(self.freeCache)
 
-	if not instance then
-		return nil
-	end
+	if not instance then return nil end
 
 	self.usedCache[instance] = true
 	return instance
 end
 
 function InstanceCache.free<T>(self: InstanceCache<T>, instance: T)
-	if not self.usedCache[instance] then
-		return
-	end
+	if not self.usedCache[instance] then return end
 
 	self.usedCache[instance] = nil
 	table.insert(self.freeCache, instance)

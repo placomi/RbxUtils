@@ -91,9 +91,7 @@ function signal.Connect<T>(self: InternalIdentity<T>, callback: (T) -> ())
 	local function disconnecter()
 		local index = table.find(self, callback)
 
-		if index then
-			table.remove(self, index)
-		end
+		if index then table.remove(self, index) end
 	end
 
 	return disconnecter
@@ -117,9 +115,7 @@ end
 function signal.Fire<T>(self: InternalIdentity<T>, arg: T)
 	self._head = #self
 	while self._head ~= 0 do
-		if not free_thread then
-			free_thread = tspawn(yield_loop)
-		end
+		if not free_thread then free_thread = tspawn(yield_loop) end
 
 		-- Type states don't take into account assigning yet
 		task.spawn(free_thread, self, arg)

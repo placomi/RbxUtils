@@ -62,9 +62,7 @@ local function observePlayerCharacter(playerCallback: PlayerCallback, callback: 
 					ancestryChangedConn:Disconnect()
 					if currentCharCleanup ~= nil then
 						task.spawn(currentCharCleanup)
-						if characterCleanupFn == currentCharCleanup then
-							characterCleanupFn = nil
-						end
+						if characterCleanupFn == currentCharCleanup then characterCleanupFn = nil end
 						currentCharCleanup = nil
 					end
 				end
@@ -76,9 +74,7 @@ local function observePlayerCharacter(playerCallback: PlayerCallback, callback: 
 
 		-- Handle initial character:
 		task.defer(function()
-			if player.Character and characterAddedConn.Connected then
-				task.spawn(OnCharacterAdded, player.Character)
-			end
+			if player.Character and characterAddedConn.Connected then task.spawn(OnCharacterAdded, player.Character) end
 		end)
 
 		-- Cleanup:

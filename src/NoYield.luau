@@ -4,9 +4,7 @@ local function resultHandler(co, ok, ...)
 		error(debug.traceback(co, message), 2)
 	end
 
-	if coroutine.status(co) ~= "dead" then
-		error(debug.traceback(co, "Attempted to yield a NoYield call"), 2)
-	end
+	if coroutine.status(co) ~= "dead" then error(debug.traceback(co, "Attempted to yield a NoYield call"), 2) end
 
 	return ...
 end

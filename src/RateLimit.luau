@@ -3,7 +3,7 @@ return function<T>(Limit: number, Interval: number)
 
 	local CountMap = {} :: { [T]: number }
 	local CountKeyless = 0
-	
+
 	return function(Key: T?)
 		if Key then
 			local Count = CountMap[Key]
@@ -16,21 +16,15 @@ return function<T>(Limit: number, Interval: number)
 				end)
 			end
 
-			if Count == Limit then
-				return false
-			end
+			if Count == Limit then return false end
 
 			CountMap[Key] = Count + 1
 		else
-			if CountKeyless == 0 then
-				task.delay(Interval, function()
-					CountKeyless = 0
-				end)
-			end
+			if CountKeyless == 0 then task.delay(Interval, function()
+				CountKeyless = 0
+			end) end
 
-			if CountKeyless == Limit then
-				return false
-			end
+			if CountKeyless == Limit then return false end
 
 			CountKeyless = CountKeyless + 1
 		end

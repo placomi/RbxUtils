@@ -41,9 +41,7 @@ local function observeLocalCharacter(callback: Callback): () -> ()
 				ancestryChangedConn:Disconnect()
 				if typeof(cleanupFn) == "function" and subscribed then
 					task.spawn(cleanupFn)
-					if cleanup == cleanupFn then
-						cleanup = nil
-					end
+					if cleanup == cleanupFn then cleanup = nil end
 				end
 			end
 		end)
@@ -58,9 +56,7 @@ local function observeLocalCharacter(callback: Callback): () -> ()
 	end
 
 	local characterAddedConn = Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
-	if Players.LocalPlayer.Character ~= nil then
-		task.spawn(onCharacterAdded, Players.LocalPlayer.Character)
-	end
+	if Players.LocalPlayer.Character ~= nil then task.spawn(onCharacterAdded, Players.LocalPlayer.Character) end
 
 	return function()
 		subscribed = false

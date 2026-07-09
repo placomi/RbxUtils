@@ -103,9 +103,7 @@ local function observeAttribute(
 
 	-- Get initial value:
 	task.defer(function()
-		if not onAttrChangedConn.Connected then
-			return
-		end
+		if not onAttrChangedConn.Connected then return end
 
 		OnAttributeChanged()
 	end)

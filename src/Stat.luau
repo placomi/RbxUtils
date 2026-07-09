@@ -136,9 +136,7 @@ function Stat._update(self: InternalStat)
 	self._observerHead = #self._observers
 	local value = self:get()
 	while self._observerHead ~= 0 do
-		if not freeThread then
-			freeThread = task.spawn(yieldLoop)
-		end
+		if not freeThread then freeThread = task.spawn(yieldLoop) end
 		task.spawn(freeThread, self, value)
 	end
 end
@@ -156,9 +154,7 @@ function Stat.observe(self: InternalStat, callback: (number) -> ()): () -> ()
 	return function()
 		local index = table.find(self._observers, callback)
 
-		if index then
-			table.remove(self._observers, index)
-		end
+		if index then table.remove(self._observers, index) end
 	end
 end
 

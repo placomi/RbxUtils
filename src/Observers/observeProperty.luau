@@ -52,9 +52,7 @@ local function observeProperty(instance: Instance, property: string, callback: C
 
 	-- Get initial value:
 	task.defer(function()
-		if not propChangedConn.Connected then
-			return
-		end
+		if not propChangedConn.Connected then return end
 		OnPropertyChanged()
 	end)
 

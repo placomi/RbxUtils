@@ -41,9 +41,7 @@ function SnapshotBuffer:getInterpolated<T>(timestamp: number): T?
 
 	-- Find all relevant snapshots: previous, low, high, next
 	for _, snapshot in self._buffer do
-		if not snapshot then
-			continue
-		end
+		if not snapshot then continue end
 		local snapshotTimestamp = snapshot[1]
 
 		-- Previous: snapshot before low
@@ -75,9 +73,7 @@ function SnapshotBuffer:getInterpolated<T>(timestamp: number): T?
 		end
 	end
 
-	if not high or not low then
-		return low or high
-	end
+	if not high or not low then return low or high end
 
 	-- Check if we need special interpolation (large distance or direction change)
 	local distance = vector.magnitude(high.Position - low.Position)

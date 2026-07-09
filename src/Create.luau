@@ -678,9 +678,7 @@ type function Properties(instance: type?)
 
 	while instance do
 		for i, v in instance:properties() do
-			if v.write and v.write.tag ~= "function" then
-				properties:setproperty(i, v.write)
-			end
+			if v.write and v.write.tag ~= "function" then properties:setproperty(i, v.write) end
 		end
 		instance = instance:readparent()
 	end
@@ -696,9 +694,7 @@ local function create<ClassName>(
 ): (Properties<index<Instances, ClassName>>) -> index<Instances, ClassName>
 	return function(properties: AnyProps)
 		local success, callResult = pcall(Instance.new, className, nil)
-		if not success then
-			error(`Invalid class name {className}`)
-		end
+		if not success then error(`Invalid class name {className}`) end
 		for property, value in properties do
 			callResult[property] = value
 		end

@@ -8,23 +8,28 @@ export type RaytraceResult = { RaycastResult }
 local OFFSET = 0.01
 
 --* PRIVATE *--
-local function getReflectedVector(v: vector, n: vector): vector 
+local function getReflectedVector(v: vector, n: vector): vector
 	return v - vector.dot(v, n) * n * 2
 end
 
 --* PUBLIC *--
-return function(origin: vector, direction: vector, maxBounces: number, raycastParams: RaycastParams?, visualize: boolean): RaytraceResult
+return function(
+	origin: vector,
+	direction: vector,
+	maxBounces: number,
+	raycastParams: RaycastParams?,
+	visualize: boolean
+): RaytraceResult
 	local results: RaytraceResult = table.create(maxBounces)
 	local currentOrigin: vector = origin
 	local currentDirection: vector = vector.normalize(direction)
 	local remainingDistance: number = vector.magnitude(direction)
 
 	for _ = 1, maxBounces do
-		local raycastResult:RaycastResult = Raycast(currentOrigin, currentDirection * remainingDistance, raycastParams, visualize)
+		local raycastResult: RaycastResult =
+			Raycast(currentOrigin, currentDirection * remainingDistance, raycastParams, visualize)
 		table.insert(results, raycastResult)
-		if not raycastResult then
-			break
-		end
+		if not raycastResult then break end
 
 		local hitNormal: vector = raycastResult.Normal
 		local hitPosition: vector = raycastResult.Position
@@ -33,9 +38,7 @@ return function(origin: vector, direction: vector, maxBounces: number, raycastPa
 		local segmentDistance: number = vector.magnitude(hitPosition - currentOrigin)
 		remainingDistance = remainingDistance - segmentDistance
 
-		if remainingDistance <= 0 then
-			break
-		end
+		if remainingDistance <= 0 then break end
 
 		currentOrigin = hitPosition + hitNormal * OFFSET
 		currentDirection = reflectedDirection

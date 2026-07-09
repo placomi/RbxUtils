@@ -4,9 +4,7 @@ local ROOT_ALIAS = "root"
 local function parsePath(pathStr)
 	local pathArray = string.split(pathStr, "/")
 	for idx = #pathArray, 1, -1 do
-		if pathArray[idx] == "" then
-			table.remove(pathArray, idx)
-		end
+		if pathArray[idx] == "" then table.remove(pathArray, idx) end
 	end
 	return pathArray
 end
@@ -36,9 +34,7 @@ local function unbindNodeDescend(node, resolvedManifest)
 		table.clear(connections)
 	end
 
-	if resolvedManifest and node.alias then
-		resolvedManifest[node.alias] = nil
-	end
+	if resolvedManifest and node.alias then resolvedManifest[node.alias] = nil end
 
 	local children = node.children
 	if children then
@@ -58,8 +54,8 @@ function AtomicBinding.new(manifest, boundFn)
 	local rootInstToManifest = {} -- { [root] -> { [alias] -> instance } }
 
 	local parsedManifest = {} -- { [alias] = {Name, ...} }
-	local manifestSizeTarget = 1 -- Add 1 because root isn't explicitly on the manifest	
-	
+	local manifestSizeTarget = 1 -- Add 1 because root isn't explicitly on the manifest
+
 	for alias, rawPath in pairs(manifest) do
 		parsedManifest[alias] = parsePath(rawPath)
 		manifestSizeTarget += 1
@@ -69,7 +65,7 @@ function AtomicBinding.new(manifest, boundFn)
 		_boundFn = boundFn,
 		_parsedManifest = parsedManifest,
 		_manifestSizeTarget = manifestSizeTarget,
-		
+
 		_dtorMap = dtorMap,
 		_connections = connections,
 		_rootInstToRootNode = rootInstToRootNode,
@@ -80,7 +76,7 @@ end
 function AtomicBinding:_startBoundFn(root, resolvedManifest)
 	local boundFn = self._boundFn
 	local dtorMap = self._dtorMap
-	
+
 	local oldDtor = dtorMap[root]
 	if oldDtor then
 		oldDtor()
@@ -88,14 +84,12 @@ function AtomicBinding:_startBoundFn(root, resolvedManifest)
 	end
 
 	local dtor = boundFn(resolvedManifest)
-	if dtor then
-		dtorMap[root] = dtor
-	end
+	if dtor then dtorMap[root] = dtor end
 end
 
 function AtomicBinding:_stopBoundFn(root)
 	local dtorMap = self._dtorMap
-	
+
 	local dtor = dtorMap[root]
 	if dtor then
 		dtor()
@@ -105,12 +99,12 @@ end
 
 function AtomicBinding:bindRoot(root)
 	debug.profilebegin("AtomicBinding:BindRoot")
-	
+
 	local parsedManifest = self._parsedManifest
 	local rootInstToRootNode = self._rootInstToRootNode
 	local rootInstToManifest = self._rootInstToManifest
 	local manifestSizeTarget = self._manifestSizeTarget
-	
+
 	assert(rootInstToManifest[root] == nil)
 
 	local resolvedManifest = {}
@@ -137,12 +131,9 @@ function AtomicBinding:bindRoot(root)
 			local childNode = parentNode.children[childName] or {}
 
 			if leaf then
-				if childNode.alias ~= nil then
-					error("Multiple aliases assigned to one instance")
-				end
+				if childNode.alias ~= nil then error("Multiple aliases assigned to one instance") end
 
 				childNode.alias = alias
-
 			else
 				childNode.children = childNode.children or {}
 				childNode.connections = childNode.connections or {}
@@ -164,17 +155,13 @@ function AtomicBinding:bindRoot(root)
 		local alias = node.alias
 		local isLeaf = not children
 
-		if alias then
-			resolvedManifest[alias] = instance
-		end
+		if alias then resolvedManifest[alias] = instance end
 
 		if not isLeaf then
 			local function processAddChild(childInstance)
 				local childName = childInstance.Name
 				local childNode = children[childName]
-				if not childNode or childNode.instance ~= nil then
-					return
-				end
+				if not childNode or childNode.instance ~= nil then return end
 
 				childNode.instance = childInstance
 				processNode(childNode)
@@ -208,9 +195,7 @@ function AtomicBinding:bindRoot(root)
 
 				-- Search for a replacement
 				local replacementChild = instance:FindFirstChild(childName)
-				if replacementChild then
-					processAddChild(replacementChild)
-				end
+				if replacementChild then processAddChild(replacementChild) end
 			end
 
 			for _, child in ipairs(instance:GetChildren()) do
@@ -229,14 +214,14 @@ function AtomicBinding:bindRoot(root)
 	debug.profilebegin("ResolveTree")
 	processNode(rootNode)
 	debug.profileend() -- ResolveTree
-	
+
 	debug.profileend() -- AtomicBinding:BindRoot
 end
 
 function AtomicBinding:unbindRoot(root)
 	local rootInstToRootNode = self._rootInstToRootNode
 	local rootInstToManifest = self._rootInstToManifest
-	
+
 	self:_stopBoundFn(root)
 
 	local rootNode = rootInstToRootNode[root]
@@ -274,4 +259,3 @@ function AtomicBinding:destroy()
 end
 
 return AtomicBinding
-

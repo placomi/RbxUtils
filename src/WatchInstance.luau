@@ -11,9 +11,7 @@ local instanceCleanupCache: { [Instance]: () -> () } = {}
 local function getReadableProperties(className: string): { string }
 	--mm yummy memoization
 	local cached = propertyCache[className]
-	if cached then
-		return cached
-	end
+	if cached then return cached end
 
 	local properties: { string } = {}
 	for _, info in ReflectionService:GetPropertiesOfClass(className) do
@@ -37,9 +35,7 @@ local function watchInstance<Class>(instance: Class): (Class, () -> ())
 
 	local cachedInstanceWatcher = instanceCache[instance]
 	local cachedInstanceCleanup = instanceCleanupCache[instance]
-	if cachedInstanceWatcher then
-		return cachedInstanceWatcher, cachedInstanceCleanup
-	end
+	if cachedInstanceWatcher then return cachedInstanceWatcher, cachedInstanceCleanup end
 
 	local instanceWatcher = {}
 	instanceCache[instance] = instanceWatcher

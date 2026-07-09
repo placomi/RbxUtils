@@ -34,9 +34,7 @@ local function visualizeRaycast(origin: vector, pos: vector, hit: boolean)
 	rayClone.Parent = raycastPart
 	task.delay(DECAY_TIME, rayClone.Destroy, rayClone)
 
-	if not hit then
-		return
-	end
+	if not hit then return end
 
 	rayClone.Color3 = HIT_COLOR
 	local hitClone = hitAdornment:Clone()

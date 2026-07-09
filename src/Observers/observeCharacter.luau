@@ -31,9 +31,7 @@ type Callback = (player: Player, character: Model) -> (() -> ())?
 ]=]
 local function observeCharacter(callback: Callback, allowedPlayers: { Player }?): () -> ()
 	return observePlayer(function(player)
-		if allowedPlayers ~= nil and not table.find(allowedPlayers, player) then
-			return nil
-		end
+		if allowedPlayers ~= nil and not table.find(allowedPlayers, player) then return nil end
 
 		local cleanupFn: (() -> ())? = nil
 
@@ -64,9 +62,7 @@ local function observeCharacter(callback: Callback, allowedPlayers: { Player }?)
 					ancestryChangedConn:Disconnect()
 					if currentCharCleanup ~= nil then
 						task.spawn(currentCharCleanup)
-						if cleanupFn == currentCharCleanup then
-							cleanupFn = nil
-						end
+						if cleanupFn == currentCharCleanup then cleanupFn = nil end
 						currentCharCleanup = nil
 					end
 				end
@@ -78,9 +74,7 @@ local function observeCharacter(callback: Callback, allowedPlayers: { Player }?)
 
 		-- Handle initial character:
 		task.defer(function()
-			if player.Character and characterAddedConn.Connected then
-				task.spawn(OnCharacterAdded, player.Character)
-			end
+			if player.Character and characterAddedConn.Connected then task.spawn(OnCharacterAdded, player.Character) end
 		end)
 
 		-- Cleanup:

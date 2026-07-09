@@ -17,7 +17,7 @@ function Observable.__call<T>(self: Observable<T>, newValue: T)
 end
 
 function Observable.set<T>(self: Observable<T>, value: T)
-	self.value = value 
+	self.value = value
 	for _, callback: (T) -> () in self.callbacks do
 		callback(value)
 	end
@@ -34,9 +34,7 @@ function Observable.observe<T>(self: Observable<T>, callback: (T) -> ()): () -> 
 	table.insert(self.callbacks, callback)
 	return function()
 		local index: number? = table.find(self.callbacks, callback)
-		if index then
-			table.remove(self.callbacks, index)
-		end
+		if index then table.remove(self.callbacks, index) end
 	end
 end
 

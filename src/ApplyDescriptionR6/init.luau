@@ -36,9 +36,7 @@ return function(character: Model, description: HumanoidDescription)
 	accessoryCharacter.Parent = workspace
 
 	for _, v in description:QueryDescendants(">AccessoryDescription") do
-		if rigidAccessoryTypes[v.AccessoryType] then
-			v:Clone().Parent = accessoryDescription
-		end
+		if rigidAccessoryTypes[v.AccessoryType] then v:Clone().Parent = accessoryDescription end
 	end
 
 	success, errorMessage = pcall(function()
@@ -46,14 +44,10 @@ return function(character: Model, description: HumanoidDescription)
 	end)
 	if success then
 		for _, accessory in character:QueryDescendants(">Accessory") do
-			if rigidAccessoryTypes[accessory.AccessoryType] then
-				accessory:Destroy()
-			end
+			if rigidAccessoryTypes[accessory.AccessoryType] then accessory:Destroy() end
 		end
 		for _, accessory in accessoryCharacter:QueryDescendants(">Accessory") do
-			if rigidAccessoryTypes[accessory.AccessoryType] then
-				accessory:Clone().Parent = character
-			end
+			if rigidAccessoryTypes[accessory.AccessoryType] then accessory:Clone().Parent = character end
 		end
 	else
 		warn(errorMessage)
